@@ -9,10 +9,11 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-nio.git", from: "1.8.0"),
+        .package(url: "https://github.com/apple/swift-nio-ssl.git", from: "1.1.1"),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "4.2.0"),
     ],
     targets: [
-        .target(name: "RxHttpClient", dependencies: ["NIO", "RxSwift"]),
-        .testTarget(name: "RxHttpClientTests", dependencies: ["RxHttpClient", "NIO", "RxSwift"]),
+        .target(name: "RxHttpClient", dependencies: ["NIO", "NIOOpenSSL", "RxSwift"]),
+        .testTarget(name: "RxHttpClientTests", dependencies: ["RxHttpClient", "NIO", "NIOOpenSSL", "RxSwift"]),
     ]
 )
