@@ -57,7 +57,7 @@ public protocol Request {
 
     func header(name: String, value: String) -> Request
 
-    func execute() -> Observable<Response>
+    func execute() -> Single<Response>
 }
 
 public protocol GetPathExtensible {
