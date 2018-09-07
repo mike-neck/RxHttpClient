@@ -15,22 +15,22 @@ import NIO
 
 public protocol RxHttpClient {
 
-    public func get(_ ur: String) -> GetRequest
+    func get(_ ur: String) -> GetRequest
 
-//    public func post(_ url: String) -> PostRequest
+//    func post(_ url: String) -> PostRequest
 //
-//    public func put(_ url: String) -> PutRequest
+//    func put(_ url: String) -> PutRequest
 //
-//    public func delete(_ url: String) -> DeleteRequest
+//    func delete(_ url: String) -> DeleteRequest
 
-    public static func newClient() -> RxHttpClient
+    static func newClient() -> RxHttpClient
 
-    public static func newClient(on eventLoopGroup: EventLoopGroup) -> RxHttpClient
+    static func newClient(on eventLoopGroup: EventLoopGroup) -> RxHttpClient
 
-    public static func newClient()
+    static func newClient()
 }
 
-protocol HttpHeader {
+public protocol HttpHeader {
 
     var name: String { get }
 
@@ -58,16 +58,16 @@ public protocol Response {
 
 public protocol Request {
 
-    public mutating func asSingle() -> Single<Response>
+    mutating func asSingle() -> Single<Response>
 
-    public mutating func wait() -> Response
+    mutating func wait() -> Response
 }
 
 public enum RequestHeader {
     case accept(mediaType: String)
     case authorization(authorizationType: AuthorizationType)
     case userAgent(agentName: String)
-    internal case host(host: String)
+    case host(host: String)
 
     public enum AuthorizationType {
         case bearer(token: String)
@@ -77,26 +77,20 @@ public enum RequestHeader {
 
 public protocol GetRequestHeader: Request {
 
-    associatedtype GetRequestBuilder: GetRequestHeader
+    func header(name: String, value: String) -> GetRequestHeader
 
-    public func header(name: String, value: String) -> GetRequestBuilder
-
-    public func header(_ header: RequestHeader) -> GetRequestBuilder
-}
-
-extension GetRequestHeader {
-    typealias GetRequestBuilder = GetRequestHeader
+    func header(_ header: RequestHeader) -> GetRequestHeader
 }
 
 public protocol GetRequestQuery: GetRequestHeader {
 
-    public func query(name: String, value: String) -> GetRequestQuery
+    func query(name: String, value: String) -> GetRequestQuery
 
-    public func query(name: String, values: [String]) -> GetRequestQuery
+    func query(name: String, values: [String]) -> GetRequestQuery
 }
 
 public protocol GetRequest: GetRequestQuery {
-    public func path(_ path: String) -> GetRequestQuery
+    func path(_ path: String) -> GetRequestQuery
 }
 
 
