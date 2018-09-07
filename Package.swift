@@ -8,8 +8,8 @@ let package = Package(
         .library(name: "RxHttpClient", targets: ["RxHttpClient"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/apple/swift-nio.git", from: "1.8.0"),
-        .package(url: "https://github.com/apple/swift-nio-ssl.git", from: "1.1.1"),
+        .package(url: "https://github.com/apple/swift-nio.git", from: "1.9.0"),
+        .package(url: "https://github.com/apple/swift-nio-ssl.git", from: "1.2.0"),
         .package(url: "https://github.com/ReactiveX/RxSwift.git", from: "4.2.0"),
     ],
     targets: [
