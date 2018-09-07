@@ -1,14 +1,13 @@
 // sample usage
 // let client: RxHttpClient = RxHttpClient.newClient()
-// let response: Observable<Response> = httpClient.get("https://api.example.com")
-//     .with(
-//       .path("team/1234/member"),
-//       .header("Authentication", "Bearer a1b2c3"),
-//       .accept("application/json"),
-//       .query("page", 2),
-//       .query("order", "id"),
-//     )
-//     .execute()
+// let response: Single<Response> = httpClient.get(.https("api.example.com"))
+//     .path("team/1234/member")
+//     .query("page", 2)
+//     .query("order", "id")
+//     .header("Authorization", "Bearer a1b2c3")
+//     .header(.accept("application/json"))
+//     .header(.userAgent("my-app"))
+//     .asSingle()
 
 import Foundation
 import RxSwift
@@ -16,18 +15,22 @@ import NIO
 
 public protocol RxHttpClient {
 
-    func get(_ ur: String) -> Get
+    public func get(_ ur: String) -> GetRequest
 
-    func post(_ url: String) -> Post
+//    public func post(_ url: String) -> PostRequest
+//
+//    public func put(_ url: String) -> PutRequest
+//
+//    public func delete(_ url: String) -> DeleteRequest
 
-    func put(_ url: String) -> Put
+    public static func newClient() -> RxHttpClient
 
-    func delete(_ url: String) -> Delete
+    public static func newClient(on eventLoopGroup: EventLoopGroup) -> RxHttpClient
 
-    static func newClient() -> RxHttpClient
+    public static func newClient()
 }
 
-public protocol HttpHeader {
+protocol HttpHeader {
 
     var name: String { get }
 
@@ -55,20 +58,54 @@ public protocol Response {
 
 public protocol Request {
 
-    func header(name: String, value: String) -> Request
+    public mutating func asSingle() -> Single<Response>
 
-    func execute() -> Single<Response>
+    public mutating func wait() -> Response
 }
 
-public protocol GetPathExtensible {
+public enum RequestHeader {
+    case accept(mediaType: String)
+    case authorization(authorizationType: AuthorizationType)
+    case userAgent(agentName: String)
+    internal case host(host: String)
 
+    public enum AuthorizationType {
+        case bearer(token: String)
+        case basic(userAndPassword: String)
+    }
 }
 
-public protocol Get: Request {}
+public protocol GetRequestHeader: Request {
 
-public protocol Post: Request {}
+    associatedtype GetRequestBuilder: GetRequestHeader
 
-public protocol Put: Request {}
+    public func header(name: String, value: String) -> GetRequestBuilder
 
-public protocol Delete: Request {}
+    public func header(_ header: RequestHeader) -> GetRequestBuilder
+}
+
+extension GetRequestHeader {
+    typealias GetRequestBuilder = GetRequestHeader
+}
+
+public protocol GetRequestQuery: GetRequestHeader {
+
+    public func query(name: String, value: String) -> GetRequestQuery
+
+    public func query(name: String, values: [String]) -> GetRequestQuery
+}
+
+public protocol GetRequest: GetRequestQuery {
+    public func path(_ path: String) -> GetRequestQuery
+}
+
+
+//public protocol PostRequest {
+//}
+//
+//public protocol PutRequest {
+//}
+//
+//public protocol DeleteRequest {
+//}
 
