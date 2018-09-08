@@ -1,5 +1,5 @@
 // sample usage
-// let client: RxHttpClient = RxHttpClient.newClient()
+// let client: HttpClient = RxHttpClient.newClient()
 // let response: Single<Response> = httpClient.get(.https("api.example.com"))
 //     .path("team/1234/member")
 //     .query("page", 2)
@@ -13,7 +13,25 @@ import Foundation
 import RxSwift
 import NIO
 
-public protocol RxHttpClient {
+protocol RxHttpClientFactory {
+
+    static func newClient() -> HttpClient
+
+    static func newClient(shareLoop loop: HttpClient) -> HttpClient
+}
+
+public class RxHttpClient: RxHttpClientFactory {
+
+    public class func newClient() -> HttpClient {
+        fatalError("newClient() has not been implemented")
+    }
+
+    public class func newClient(shareLoop loop: HttpClient) -> HttpClient {
+        fatalError("newClient(eventLoopGroup:) has not been implemented")
+    }
+}
+
+public protocol HttpClient {
 
     func get(_ ur: String) -> GetRequest
 
@@ -23,9 +41,9 @@ public protocol RxHttpClient {
 //
 //    func delete(_ url: String) -> DeleteRequest
 
-    static func newClient() -> RxHttpClient
+    var loop: ClientLoop { get }
 
-    static func newClient(on eventLoopGroup: EventLoopGroup) -> RxHttpClient
+    func shutdown() throws
 }
 
 //public protocol PostRequest {
