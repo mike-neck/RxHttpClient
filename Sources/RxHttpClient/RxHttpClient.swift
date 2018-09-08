@@ -26,34 +26,6 @@ public protocol RxHttpClient {
     static func newClient() -> RxHttpClient
 
     static func newClient(on eventLoopGroup: EventLoopGroup) -> RxHttpClient
-
-    static func newClient()
-}
-
-public protocol HttpHeader {
-
-    var name: String { get }
-
-    var values: [String] { get }
-
-    var singleValue: String { get }
-}
-
-public protocol Response {
-
-    var headers: [HttpHeader] { get }
-
-    func headerValues(of: String) -> [String]
-
-    func headerValue(of: String) -> String?
-
-    var status: Int { get }
-
-    func bodyAsByte() -> [ByteBuffer]
-
-    func bodyAsString() -> String
-
-    func bodyAs<T>(_ type: T.Type, usingEncoding: String.Encoding) throws -> T
 }
 
 //public protocol PostRequest {
