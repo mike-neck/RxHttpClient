@@ -18,5 +18,9 @@ jobs:
           name: Run tests
           command: swift test > test-report.txt 2>&1
 
+      - run:
+          name: Show results
+          command: cat test-report.txt
+
       - store_test_results:
           path: test-report.txt
