@@ -1,7 +1,7 @@
 import XCTest
 import RxHttpClient
 
-class RequestHeaderTest: XCTestCase {
+class RequestHeaderTest: XCTestCase, Executable {
 
     func test_acceptHeader() {
         let header: RequestHeader = .accept(mediaType: "application/json")
@@ -32,5 +32,24 @@ class RequestHeaderTest: XCTestCase {
         ("test_authorizationHeader", test_authorizationHeader),
         ("test_userAgentHeader", test_userAgentHeader),
         ("test_hostHeader", test_hostHeader),
+    ]
+}
+
+class RequestURLTest: XCTestCase, Executable {
+
+    func test_url() {
+        let url = Url.to(.http("localhost"), port: 8000)
+        XCTAssertEqual("localhost", url.host)
+        XCTAssertEqual(8000, url.port)
+    }
+
+    func test_https() {
+        let https: HttpUrl = .https("example.com")
+        XCTAssertEqual("example.com", https.host)
+        XCTAssertEqual(443, https.port)
+    }
+
+    static let allTests: [(String, (RequestURLTest) -> () -> ())] = [
+        ("test_url", test_url)
     ]
 }
