@@ -5,4 +5,5 @@ XCTMain([
     testCase(RequestHeaderTest.allTests),
     testCase(RequestURLTest.allTests),
     testCase(ClientBuilderTest.allTests),
+    testCase(ClientConnectionConfigurationTest.allTests)
 ])
