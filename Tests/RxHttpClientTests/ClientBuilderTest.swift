@@ -1,5 +1,5 @@
 import XCTest
-import RxHttpClient
+@testable import RxHttpClient
 import NIO
 
 class ClientBuilderTest: XCTestCase, Executable {
@@ -7,6 +7,7 @@ class ClientBuilderTest: XCTestCase, Executable {
     static let allTests: [(String, (ClientBuilderTest) -> () -> ())] = [
         ("test_embeddedEventLoop", test_embeddedEventLoop),
         ("test_multiThreadedEventLoop", test_multiThreadedEventLoop),
+        ("test_sharedEventLoop", test_sharedEventLoop)
     ]
 
     var clientLoop: ClientLoop?
@@ -35,9 +36,23 @@ class ClientBuilderTest: XCTestCase, Executable {
         XCTAssertNotNil(eventLoop)
     }
 
+    func test_sharedEventLoop() {
+        let eventLoop = EmbeddedEventLoop()
+        clientLoop = try! ClientLoopBuilder.shared(eventLoop: eventLoop)
+                .createClientLoop()
+
+        guard let actual = clientLoop?.eventLoopGroup as? EmbeddedEventLoop else {
+            XCTFail("expected sharedEventLoopGroup existing but not.", file: #file, line: #line)
+            return
+        }
+        XCTAssertTrue(eventLoop === actual)
+    }
+
     override func tearDown() {
         if let loop = clientLoop {
             try! loop.shutdown()
         }
     }
 }
+
+

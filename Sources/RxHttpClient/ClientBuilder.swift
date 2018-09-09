@@ -15,6 +15,7 @@ fileprivate protocol EventLoopProvider {
 fileprivate enum EventLoopType: EventLoopProvider {
     case multiThread
     case embedded
+    case shared(eventLoop: EventLoopGroup)
 
     func eventLoop(threads: Int) -> EventLoopGroup {
         switch self {
@@ -22,6 +23,8 @@ fileprivate enum EventLoopType: EventLoopProvider {
             return MultiThreadedEventLoopGroup(numberOfThreads: threads)
         case .embedded:
             return EmbeddedEventLoop()
+        case .shared(let eventLoopGroup):
+            return eventLoopGroup
         }
     }
 }
@@ -68,6 +71,10 @@ public extension ClientLoopBuilder {
 
     public static func embedded() -> ClientLoopBuilder {
         return ClientLoopBuilder(type: .embedded)
+    }
+
+    public static func shared(eventLoop: EventLoopGroup) -> ClientLoopBuilder {
+        return ClientLoopBuilder(type: .shared(eventLoop: eventLoop))
     }
 }
 
